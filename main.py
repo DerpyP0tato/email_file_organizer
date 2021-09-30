@@ -1,12 +1,9 @@
 import imaplib
 import os
-from os import walk
 import email
-import pydrive
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
-import csv
-import pandas as pd
+from passwrd import passw
 
 '''
 https://www.projectpro.io/recipes/upload-files-to-google-drive-using-python
@@ -15,7 +12,7 @@ https://www.projectpro.io/recipes/upload-files-to-google-drive-using-python
 # Server to sign into email
 host = 'imap.gmail.com'
 username = 'max.code.email@gmail.com'
-password = 'MaxwellChan01'
+password = passw
 
 mail = imaplib.IMAP4_SSL(host)
 mail.login(username, password)
