@@ -5,11 +5,14 @@ import email
 import pydrive
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
+import csv
+import pandas as pd
 
 '''
 https://www.projectpro.io/recipes/upload-files-to-google-drive-using-python
 '''
 
+# Server to sign into email
 host = 'imap.gmail.com'
 username = 'max.code.email@gmail.com'
 password = 'MaxwellChan01'
@@ -19,25 +22,34 @@ mail.login(username, password)
 mail.select('inbox')
 my_message = []
 
+# Google Authentication
 gauth = GoogleAuth()
 gauth.LocalWebserverAuth()
 drive = GoogleDrive(gauth)
 
+# path for folder
 path = '/Users/maxma/OneDrive/Desktop/Coding/Projects/Emails/Email File Organizer'
 
+filenames = []
+
+
+# searches all mail
 _, search_data = mail.search(None, 'ALL')
 
-f = []
-filenames = next(walk(path), (None, None, []))[2]
-
+# checks every email
 for num in search_data[0].split():
     email_data = {}
+    # fetch email, dont know what (RFC822) mean
     _, data = mail.fetch(num, '(RFC822)')
+    # gets email data
     _, b = data[0]
     email_message = email.message_from_bytes(b)
     for header in ['subject']:
-        if email_message['Subject'] == 'Form' or 'form':
+        # Email subject filter
+        if str(email_message['Subject']).lower() == 'form':
+            # filter emails
             if 'max.code.email@gmail.com' in email_message['From']:
+                # gets and filter message content
                 for part in email_message.walk():
                     mail_content = ''
                     if part.get_content_maintype() == 'multipart':
@@ -47,15 +59,8 @@ for num in search_data[0].split():
                     fileName = part.get_filename()
                     if bool(fileName):
                         filePath = os.path.join(path, fileName)
+                        # writes/download file
                         if not os.path.isfile(filePath):
-                            if fileName[:3] == '.txt':
-                                print('True')
-                            else:
-                                print('False')
-                            #check for file extension
-                            #find the folder for that file extension, if the folder doesn't exist, create a folder.
-                            #find the path of the folder
-                            #write the file to the folder
                             fp = open(filePath, 'wb')
                             fp.write(part.get_payload(decode=True))
                             fp.close()
@@ -63,10 +68,20 @@ for num in search_data[0].split():
                         print('Downloaded "{file}" from email titled "{subject}".'.format(
                                 file=fileName,
                                 subject=subject
-                                ))
-                for upload_file in filenames:
-                    gfile = drive.CreateFile({'parents': [{'id': '1Fy6scuzj-WD6ioKx_LFLxZ0itRKSZf1c'}]})
-                    gfile.SetContentFile(upload_file)
-                    gfile.Upload()
-        else:
-            print('Something went wrong')
+                            ))
+                        filenames.append(fileName)
+
+# make a for loop to look through the folder
+# uploads files
+for upload_file in filenames:
+    gfile = drive.CreateFile({'parents': [{'id': '1ZSPJifViqFY5VP49uUoP0nZSKRCC4ePf'}]})
+    gfile.SetContentFile(upload_file)
+    gfile.Upload()
+    gfile = None
+    print('Uploaded:', upload_file)
+
+# deletes files
+for file in filenames:
+    print("DELETING:", file)
+    os.remove(file)
+
