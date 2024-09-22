@@ -67,7 +67,7 @@ for num in search_data[0].split():
 # make a for loop to look through the folder
 # uploads files
 for upload_file in filenames:
-    gfile = drive.CreateFile({'parents': [{'id': '1ZSPJifViqFY5VP49uUoP0nZSKRCC4ePf'}]})
+    gfile = drive.CreateFile({'parents': [{'id': 'Nope :)'}]})
     gfile.SetContentFile(upload_file)
     gfile.Upload()
     gfile = None
