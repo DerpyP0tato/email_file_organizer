@@ -5,10 +5,6 @@ from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
 from passwrd import passw
 
-'''
-https://www.projectpro.io/recipes/upload-files-to-google-drive-using-python
-'''
-
 # Server to sign into email
 host = 'imap.gmail.com'
 username = 'max.code.email@gmail.com'
